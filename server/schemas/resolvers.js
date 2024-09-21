@@ -37,6 +37,16 @@ const resolvers = {
             const book = await Book.create({ title, author, description, link });
             return book;
         },
+        saveBook: async (parent, { bookInput }, context) => {
+            if (context.user) {
+                const book = await User.findByIdAndUpdate(
+                    { id: context.user.id },
+                    { $push: { savedBooks: bookInput } },
+                    { new: true }
+                );
+                return book;
+            }
+        },
         removeUser: async (parent, { userId }) => {
             await User.findByIdAndDelete(userId);
             return;
